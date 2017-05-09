@@ -19,6 +19,7 @@ define
    PlayerLoad
    PlayerFire
    Tu
+   TurnByTurn
 in
    {Tuple.make 'ports'  Input.nbPlayer Tu}
    proc{SetPorts ID Players Colors}
@@ -85,31 +86,42 @@ in
 	 end
       end
    end
-   proc{LoadGame ID} %% Fonction principale du tour par tour
-     local Answer Position Direction in
+   proc{LoadGame ID Round} %% Fonction principale du tour par tour
+     local Answer Position Direction P in
       if ID > 0 andthen ID =<Input.nbPlayer then {Send Tu.ID isSurface(ID Answer)}
-	 if Answer == true then {LoadGame ID+1}
-	 else {Send Tu.ID move(ID Position east)}
+	 if Answer == true then {LoadGame ID+1 Round+1}
+	 else
+	    if Round == 0 %first move of the game or first move after having surfaced
+	    then
+	       {Send Tu.ID dive}
+	    else
+	       {Send Tu.ID move(Position Direction)}
+	       if Direction == surface then
+		  {Send ports saySurface(Tu.ID)}
+		  {Send PortGUI surface(Tu.ID)}
+		  
+	       else
+		  {Send ports sayMove(ID Position east)}
+		  
+		  {Send PortGUI MovePlayer(ID Position)}
+	       end
+	       
+	    end
+	    
 	 end
       end
      end
    end
+   
    
     
    {SetPorts 1 Input.players Input.colors} 
    PortGUI = {GUI.portWindow}
    {Send PortGUI buildWindow}
    {InitPlayers 1 Input.colors Input.players}
-   {MovePlayer 1 Input.players.1 Input.colors.1 east}
-   {MovePlayer 1 Input.players.1 Input.colors.1 east}
-   {MovePlayer 1 Input.players.1 Input.colors.1 north}
-   %{PlayerLoad 1 Input.players.1 Input.colors.1 mine}
-   %{PlayerLoad 1 Input.players.1 Input.colors.1 mine}
-   %{PlayerLoad 1 Input.players.1 Input.colors.1 mine}
-   %{PlayerFire 1 Input.players.1 Input.colors.1 mine(x:9 y:8)}
-   %{Send PortGUI putMine(id(id:1 color:red name:'player013kenzo') pt(x:8 y:9))}
+   
       case Input.isTurnByTurn of true then
-	 skip
+	 {LoadGame 1 0}
       [] false then
 	 skip
       end

@@ -23,7 +23,7 @@ in
    fun{InitId ID}
       Id
    in
-      id(id:Id color:red name:"player013kenzo") = ID
+      id(id:Id color:blue name:"player043justine") = ID
       ID
    end
    fun{MoveP Actual Direction}
@@ -86,13 +86,13 @@ in
 	    ID Stream Position Dive Item FireItem
 	 in
 	    {NewPort Stream Port}
-	    thread {TreatStream Stream Path Item false} end
+	    thread {TreatStream Stream Path Item true} end
 	    Port
 	 end
 	 proc{TreatStream Stream Path Item Surface}% has as many parameters as you want ...
 	    X Y Color Id
 	 in 
-	    case Stream of initPosition(ID Position)|T then Position = pt(x:2 y:3) {TreatStream T Position|Path Item Surface}
+	    case Stream of initPosition(ID Position)|T then Position = pt(x:8 y:9) {TreatStream T Position|Path Item Surface}
 	    []move(ID Position Direction)|T then Position = {MoveP Path.1 Direction} {TreatStream T Position|Path Item Surface}
 	    []dive|T then {TreatStream T Path Item Surface}
 	    []chargeItem(ID KindItem)|T then {TreatStream T Path {LoadItem Item KindItem} Surface}
@@ -101,5 +101,7 @@ in
 	    end
 	 end
       end
+
+
 
 

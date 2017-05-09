@@ -23,7 +23,7 @@ in
    fun{InitId ID}
       Id
    in
-      id(id:Id color:blue name:"player013justine") = ID
+      id(id:Id color:red name:"player043kenzo") = ID
       ID
    end
    fun{MoveP Actual Direction}
@@ -80,28 +80,26 @@ in
 	 Surface
       end
    end
-	 fun{StartPlayer Color ID}
-	    Stream
-	    Port
-	    ID Stream Position Dive Item FireItem
-	 in
-	    {NewPort Stream Port}
-	    thread {TreatStream Stream Path Item true} end
-	    Port
-	 end
-	 proc{TreatStream Stream Path Item Surface}% has as many parameters as you want ...
-	    X Y Color Id
-	 in 
-	    case Stream of initPosition(ID Position)|T then ID =id(id:ID color:green name:player013justine) Position = pt(x:8 y:9) {TreatStream T Position|Path Item Surface}
-	    []move(ID Position Direction)|T then Position = {MoveP Path.1 Direction} {TreatStream T Position|Path Item Surface}
-	    []dive|T then {TreatStream T Path Item Surface}
-	    []chargeItem(ID KindItem)|T then {TreatStream T Path {LoadItem Item KindItem} Surface}
-	    []fireItem(ID KindFire)|T then {TreatStream T Path {Fire Item KindFire} Surface}
-	    []isSurface(ID Answer)|T then ID =id(id:ID color:green name:player013justine) Answer = {IsSurface Surface}  {TreatStream T Path Item Surface}
-	    end
-	 end
+   fun{StartPlayer Color ID}
+      Stream
+      Port
+      ID Stream Position Dive Item FireItem
+   in
+      {NewPort Stream Port}
+      thread {TreatStream Stream Path Item false} end
+      Port
+   end
+   proc{TreatStream Stream Path Item Surface}% has as many parameters as you want ...
+      X Y Color Id
+   in 
+      case Stream of initPosition(ID Position)|T then Position = pt(x:2 y:3) {TreatStream T Position|Path Item Surface}
+      []move(ID Position Direction)|T then Position = {MoveP Path.1 Direction} {TreatStream T Position|Path Item Surface}
+      []dive|T then {TreatStream T Path Item Surface}
+      []chargeItem(ID KindItem)|T then {TreatStream T Path {LoadItem Item KindItem} Surface}
+      []fireItem(ID KindFire)|T then {TreatStream T Path {Fire Item KindFire} Surface}
+      []isSurface(ID Answer)|T then Answer = {IsSurface Surface}  {TreatStream T Path Item Surface}
       end
-
-
+   end
+end
 
 
